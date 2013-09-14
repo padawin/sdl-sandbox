@@ -10,7 +10,7 @@ typedef struct {
 	int z;
 } cloud;
 
-void pause();
+void loop();
 SDL_Surface* createWindow();
 void createSky(SDL_Surface* screen);
 cloud createCloud();
@@ -34,13 +34,13 @@ int main(int argc, char *argv[])
 	createSky(screen);
 
 	// main loop
-	pause();
+	loop();
 
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
 
-void pause()
+void loop()
 {
 	int continuer = 1;
 	SDL_Event event;
