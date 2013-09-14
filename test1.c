@@ -15,6 +15,8 @@ typedef struct {
 
 #define WIND_SPEED .1
 #define NB_CLOUDS 10
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
 
 void loop(SDL_Surface *screen, cloud* clouds);
 SDL_Surface* createWindow();
@@ -81,7 +83,7 @@ SDL_Surface* createWindow(char* title)
 	// window title
 	SDL_WM_SetCaption(title, NULL);
 	// window opening
-	screen = SDL_SetVideoMode(640, 480, 32, SDL_HWSURFACE);
+	screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32, SDL_HWSURFACE);
 
 	if (screen == NULL) {
 		fprintf(stderr, "An error occured during the creation of the window: %s\n", SDL_GetError());
@@ -123,8 +125,8 @@ cloud createCloud()
 	c.surface = surface;
 	c.width = width;
 	c.height = height;
-	c.x = (float) get_random_int(0, 640);
-	c.y = (float) get_random_int(0, 240);
+	c.x = (float) get_random_int(0, WINDOW_WIDTH);
+	c.y = (float) get_random_int(0, WINDOW_HEIGHT / 2);
 	c.z = depth;
 
 	return c;
