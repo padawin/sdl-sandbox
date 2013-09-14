@@ -59,7 +59,7 @@ void loop(SDL_Surface *screen, cloud* clouds)
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 71, 170, 253));
 
 		for (c = 0; c < NB_CLOUDS; c++) {
-			clouds[c].x += WIND_SPEED;
+			clouds[c].x += WIND_SPEED * 5 / clouds[c].z;
 			position.x = clouds[c].x;
 			position.y = clouds[c].y;
 			SDL_BlitSurface(clouds[c].surface, NULL, screen, &position);
