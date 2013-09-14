@@ -73,11 +73,13 @@ w_weighted_element create_player()
 	SDL_Surface *image;
 	SDL_Rect srcPos;
 
+	player.element.width = 32;
+	player.element.height = 40;
 	// area of the sprite to diplay in the player surface
 	srcPos.x = 32;
 	srcPos.y = 40;
-	srcPos.w = 32;
-	srcPos.h = 40;
+	srcPos.w = player.element.width;
+	srcPos.h = player.element.height;
 
 	// Player sprite
 	image = SDL_LoadBMP("resources/player.bmp");
