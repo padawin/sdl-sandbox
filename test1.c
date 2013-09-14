@@ -11,17 +11,18 @@ typedef struct {
 	float x;
 	float y;
 	float z;
-} cloud;
+} w_element;
 
 #define WIND_SPEED .1
 #define NB_CLOUDS 10
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-void loop(SDL_Surface *screen, cloud* clouds);
+void loop(SDL_Surface* screen, w_element ground, w_element* clouds);
 SDL_Surface* createWindow();
-cloud* createClouds();
-cloud createCloud();
+w_element create_ground();
+w_element* createClouds();
+w_element createCloud();
 unsigned int get_random_int(unsigned int min, unsigned int max);
 
 int main(int argc, char *argv[])
@@ -33,7 +34,8 @@ int main(int argc, char *argv[])
 
 	SDL_Surface *screen;
 	int c;
-	cloud* clouds;
+	w_element ground;
+	w_element* clouds;
 	screen = createWindow("Title");
 
 	if (screen == NULL) {
@@ -42,19 +44,32 @@ int main(int argc, char *argv[])
 	}
 
 	clouds = createClouds();
+	ground = create_ground();
 
 	// main loop
-	loop(screen, clouds);
+	loop(screen, ground, clouds);
 
 	for (c = 0; c < NB_CLOUDS; c++) {
 		SDL_FreeSurface(clouds[c].surface);
 	}
 	free(clouds);
+	SDL_FreeSurface(ground.surface);
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
 
-void loop(SDL_Surface *screen, cloud* clouds)
+w_element create_ground()
+{
+	w_element ground;
+
+	ground.x = 0;
+	ground.y = WINDOW_HEIGHT - 50;
+	ground.surface = SDL_CreateRGBSurface(SDL_HWSURFACE, WINDOW_WIDTH, 50, 8, 44, 175, 0, 0);
+	SDL_FillRect(ground.surface, NULL, SDL_MapRGB(ground.surface->format, 44, 175, 0));
+	return ground;
+}
+
+void loop(SDL_Surface* screen, w_element ground, w_element* clouds)
 {
 	int c, continuer = 1;
 	SDL_Event event;
@@ -63,6 +78,9 @@ void loop(SDL_Surface *screen, cloud* clouds)
 	while (continuer)
 	{
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 71, 170, 253));
+		position.x = ground.x;
+		position.y = ground.y;
+		SDL_BlitSurface(ground.surface, NULL, screen, &position);
 
 		for (c = 0; c < NB_CLOUDS; c++) {
 			clouds[c].x += WIND_SPEED * 5 / clouds[c].z;
@@ -103,12 +121,12 @@ SDL_Surface* createWindow(char* title)
 	return screen;
 }
 
-cloud* createClouds()
+w_element* createClouds()
 {
 	int c;
-	cloud *clouds;
+	w_element *clouds;
 
-	clouds = (cloud*) calloc(NB_CLOUDS, sizeof(cloud));
+	clouds = (w_element*) calloc(NB_CLOUDS, sizeof(w_element));
 
 	for (c = 0; c < NB_CLOUDS; c++) {
 		clouds[c] = createCloud();
@@ -117,9 +135,9 @@ cloud* createClouds()
 	return clouds;
 }
 
-cloud createCloud()
+w_element createCloud()
 {
-	cloud c;
+	w_element c;
 	int width, height, depth;
 	SDL_Surface *surface;
 
