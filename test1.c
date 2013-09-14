@@ -13,16 +13,23 @@ typedef struct {
 	float z;
 } w_element;
 
+typedef struct {
+	w_element element;
+	float weight;
+} w_weighted_element;
+
+
 #define WIND_SPEED .1
 #define NB_CLOUDS 10
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-void loop(SDL_Surface* screen, w_element ground, w_element* clouds);
+void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player);
 SDL_Surface* create_window(char* title);
 w_element create_ground();
 w_element* create_clouds();
 w_element create_cloud();
+w_weighted_element create_player();
 unsigned int get_random_int(unsigned int min, unsigned int max);
 
 int main(int argc, char *argv[])
@@ -35,6 +42,7 @@ int main(int argc, char *argv[])
 	SDL_Surface *screen;
 	int c;
 	w_element ground;
+	w_weighted_element player;
 	w_element* clouds;
 	screen = create_window("Title");
 
@@ -45,9 +53,10 @@ int main(int argc, char *argv[])
 
 	ground = create_ground();
 	clouds = create_clouds();
+	player = create_player();
 
 	// main loop
-	loop(screen, ground, clouds);
+	loop(screen, ground, clouds, player);
 
 	for (c = 0; c < NB_CLOUDS; c++) {
 		SDL_FreeSurface(clouds[c].surface);
@@ -56,6 +65,39 @@ int main(int argc, char *argv[])
 	SDL_FreeSurface(ground.surface);
 	SDL_Quit();
 	return EXIT_SUCCESS;
+}
+
+w_weighted_element create_player()
+{
+	w_weighted_element player;
+	SDL_Surface *image;
+	SDL_Rect srcPos;
+
+	// area of the sprite to diplay in the player surface
+	srcPos.x = 32;
+	srcPos.y = 40;
+	srcPos.w = 32;
+	srcPos.h = 40;
+
+	// Player sprite
+	image = SDL_LoadBMP("resources/player.bmp");
+
+	// Player surface
+	player.element.surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 32, 40, 32, 0, 0, 0, 0);
+	// Blit in the player surface the subsection of the image represented by
+	// srcPos
+	SDL_BlitSurface(image, &srcPos, player.element.surface, NULL);
+	// Make transparent every black pixels
+	SDL_SetColorKey(player.element.surface, SDL_SRCCOLORKEY, SDL_MapRGB(player.element.surface->format, 0, 0, 0));
+
+	// Set some player's informations
+	player.element.x = WINDOW_WIDTH / 2;
+	player.element.y = WINDOW_HEIGHT / 2;
+	player.weight = 1;
+
+	// Free the image surface
+	SDL_FreeSurface(image);
+	return player;
 }
 
 w_element create_ground()
@@ -69,7 +111,7 @@ w_element create_ground()
 	return ground;
 }
 
-void loop(SDL_Surface* screen, w_element ground, w_element* clouds)
+void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player)
 {
 	int c, continuer = 1;
 	SDL_Event event;
@@ -92,6 +134,10 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds)
 			position.y = clouds[c].y;
 			SDL_BlitSurface(clouds[c].surface, NULL, screen, &position);
 		}
+
+		position.x = player.element.x;
+		position.y = player.element.y;
+		SDL_BlitSurface(player.element.surface, NULL, screen, &position);
 
 		SDL_Flip(screen);
 
