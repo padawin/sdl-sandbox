@@ -6,8 +6,9 @@
 
 typedef struct {
 	SDL_Surface *surface;
-	SDL_Rect position;
-	int z;
+	float x;
+	float y;
+	float z;
 } cloud;
 
 #define WIND_SPEED .1
@@ -106,8 +107,8 @@ cloud createCloud()
 	SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 255, 255, 255));
 
 	c.surface = surface;
-	c.position.x = get_random_int(0, 640);
-	c.position.y = get_random_int(0, 240);
+	c.x = (float) get_random_int(0, 640);
+	c.y = (float) get_random_int(0, 240);
 	c.z = depth;
 
 	return c;
