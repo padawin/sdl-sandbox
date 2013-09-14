@@ -60,6 +60,10 @@ void loop(SDL_Surface *screen, cloud* clouds)
 
 		for (c = 0; c < NB_CLOUDS; c++) {
 			clouds[c].x += WIND_SPEED * 5 / clouds[c].z;
+			if (clouds[c].x > WINDOW_WIDTH) {
+				clouds[c].x = 0 - clouds[c].width;
+			}
+
 			position.x = clouds[c].x;
 			position.y = clouds[c].y;
 			SDL_BlitSurface(clouds[c].surface, NULL, screen, &position);
