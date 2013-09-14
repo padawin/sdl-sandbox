@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
 	}
 
 	SDL_Surface *screen;
+	int c;
 	screen = createWindow("Title");
 
 	if (screen == NULL) {
@@ -44,6 +45,10 @@ int main(int argc, char *argv[])
 	// main loop
 	loop(screen, clouds);
 
+	for (c = 0; c < NB_CLOUDS; c++) {
+		SDL_FreeSurface(clouds[c].surface);
+	}
+	free(clouds);
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
