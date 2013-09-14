@@ -6,6 +6,8 @@
 
 typedef struct {
 	SDL_Surface *surface;
+	int width;
+	int height;
 	float x;
 	float y;
 	float z;
@@ -119,6 +121,8 @@ cloud createCloud()
 	SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 255, 255, 255));
 
 	c.surface = surface;
+	c.width = width;
+	c.height = height;
 	c.x = (float) get_random_int(0, 640);
 	c.y = (float) get_random_int(0, 240);
 	c.z = depth;
