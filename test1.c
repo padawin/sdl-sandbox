@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 
 	SDL_Surface *screen;
 	int c;
+	cloud* clouds;
 	screen = createWindow("Title");
 
 	if (screen == NULL) {
@@ -40,7 +41,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	cloud* clouds = createClouds();
+	clouds = createClouds();
 
 	// main loop
 	loop(screen, clouds);
