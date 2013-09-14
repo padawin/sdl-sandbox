@@ -14,7 +14,7 @@ typedef struct {
 #define WIND_SPEED .1
 #define NB_CLOUDS 10
 
-void loop();
+void loop(SDL_Surface *screen, cloud* clouds);
 SDL_Surface* createWindow();
 cloud* createClouds();
 cloud createCloud();
@@ -35,28 +35,40 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	createSky(screen);
+	cloud* clouds = createClouds();
 
 	// main loop
-	loop();
+	loop(screen, clouds);
 
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
 
-void loop()
+void loop(SDL_Surface *screen, cloud* clouds)
 {
-	int continuer = 1;
+	int c, continuer = 1;
 	SDL_Event event;
+	SDL_Rect position;
 
 	while (continuer)
 	{
-		SDL_WaitEvent(&event);
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				continuer = 0;
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 71, 170, 253));
+
+		for (c = 0; c < NB_CLOUDS; c++) {
+			clouds[c].x += WIND_SPEED;
+			position.x = clouds[c].x;
+			position.y = clouds[c].y;
+			SDL_BlitSurface(clouds[c].surface, NULL, screen, &position);
 		}
+
+		SDL_Flip(screen);
+
+		//~SDL_WaitEvent(&event);
+		//~switch(event.type)
+		//~{
+			//~case SDL_QUIT:
+				//~continuer = 0;
+		//~}
 	}
 }
 
