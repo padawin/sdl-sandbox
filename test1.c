@@ -16,6 +16,7 @@ typedef struct {
 typedef struct {
 	w_element element;
 	float weight;
+	float speed;
 } w_weighted_element;
 
 
@@ -23,6 +24,10 @@ typedef struct {
 #define NB_CLOUDS 10
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+#define SPEED 2
+#define GRAVITY 1
+#define DRAG 0.98
+#define BOUNCE .9
 
 void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player);
 SDL_Surface* create_window(char* title);
@@ -30,6 +35,7 @@ w_element create_ground();
 w_element* create_clouds();
 w_element create_cloud();
 w_weighted_element create_player();
+void handle_player_gravity(w_weighted_element* player, w_element* ground);
 unsigned int get_random_int(unsigned int min, unsigned int max);
 
 int main(int argc, char *argv[])
@@ -96,6 +102,7 @@ w_weighted_element create_player()
 	player.element.x = WINDOW_WIDTH / 2;
 	player.element.y = WINDOW_HEIGHT / 2;
 	player.weight = 1;
+	player.speed = SPEED;
 
 	// Free the image surface
 	SDL_FreeSurface(image);
@@ -137,6 +144,8 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 			SDL_BlitSurface(clouds[c].surface, NULL, screen, &position);
 		}
 
+		handle_player_gravity(&player, &ground);
+
 		position.x = player.element.x;
 		position.y = player.element.y;
 		SDL_BlitSurface(player.element.surface, NULL, screen, &position);
@@ -150,6 +159,16 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 				quit = 1;
 		}
 	}
+}
+
+void handle_player_gravity(w_weighted_element* player, w_element* ground)
+{
+	(*player).element.y += (*player).speed;
+	if ((*player).element.y + (*player).element.height > (*ground).y) {
+		(*player).element.y = (*ground).y - (*player).element.height;
+		(*player).speed = -(*player).speed * BOUNCE;
+	}
+	(*player).speed = (*player).speed * DRAG + GRAVITY;
 }
 
 SDL_Surface* create_window(char* title)
