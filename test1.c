@@ -71,12 +71,12 @@ void loop(SDL_Surface *screen, cloud* clouds)
 
 		SDL_Flip(screen);
 
-		//~SDL_WaitEvent(&event);
-		//~switch(event.type)
-		//~{
-			//~case SDL_QUIT:
-				//~continuer = 0;
-		//~}
+		SDL_PollEvent(&event);
+		switch(event.type)
+		{
+			case SDL_QUIT:
+				continuer = 0;
+		}
 	}
 }
 
