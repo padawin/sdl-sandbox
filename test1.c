@@ -113,11 +113,11 @@ w_element create_ground()
 
 void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player)
 {
-	int c, continuer = 1;
+	int c, quit = 0;
 	SDL_Event event;
 	SDL_Rect position;
 
-	while (continuer)
+	while (!quit)
 	{
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 71, 170, 253));
 		position.x = ground.x;
@@ -145,7 +145,7 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 		switch(event.type)
 		{
 			case SDL_QUIT:
-				continuer = 0;
+				quit = 1;
 		}
 	}
 }
