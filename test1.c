@@ -19,10 +19,10 @@ typedef struct {
 #define WINDOW_HEIGHT 480
 
 void loop(SDL_Surface* screen, w_element ground, w_element* clouds);
-SDL_Surface* createWindow();
+SDL_Surface* create_window(char* title);
 w_element create_ground();
-w_element* createClouds();
-w_element createCloud();
+w_element* create_clouds();
+w_element create_cloud();
 unsigned int get_random_int(unsigned int min, unsigned int max);
 
 int main(int argc, char *argv[])
@@ -36,15 +36,15 @@ int main(int argc, char *argv[])
 	int c;
 	w_element ground;
 	w_element* clouds;
-	screen = createWindow("Title");
+	screen = create_window("Title");
 
 	if (screen == NULL) {
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	clouds = createClouds();
 	ground = create_ground();
+	clouds = create_clouds();
 
 	// main loop
 	loop(screen, ground, clouds);
@@ -104,7 +104,7 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds)
 	}
 }
 
-SDL_Surface* createWindow(char* title)
+SDL_Surface* create_window(char* title)
 {
 	SDL_Surface *screen;
 
@@ -121,7 +121,7 @@ SDL_Surface* createWindow(char* title)
 	return screen;
 }
 
-w_element* createClouds()
+w_element* create_clouds()
 {
 	int c;
 	w_element *clouds;
@@ -129,13 +129,13 @@ w_element* createClouds()
 	clouds = (w_element*) calloc(NB_CLOUDS, sizeof(w_element));
 
 	for (c = 0; c < NB_CLOUDS; c++) {
-		clouds[c] = createCloud();
+		clouds[c] = create_cloud();
 	}
 
 	return clouds;
 }
 
-w_element createCloud()
+w_element create_cloud()
 {
 	w_element c;
 	int width, height, depth;
