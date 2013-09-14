@@ -10,6 +10,9 @@ typedef struct {
 	int z;
 } cloud;
 
+#define WIND_SPEED .1
+#define NB_CLOUDS 10
+
 void loop();
 SDL_Surface* createWindow();
 void createSky(SDL_Surface* screen);
