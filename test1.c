@@ -15,7 +15,7 @@ typedef struct {
 
 void loop();
 SDL_Surface* createWindow();
-void createSky(SDL_Surface* screen);
+cloud* createClouds();
 cloud createCloud();
 unsigned int get_random_int(unsigned int min, unsigned int max);
 
@@ -76,22 +76,18 @@ SDL_Surface* createWindow(char* title)
 	return screen;
 }
 
-void createSky(SDL_Surface* screen)
+cloud* createClouds()
 {
-	SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 71, 170, 253));
+	int c;
+	cloud *clouds;
 
-	int c, nbClouds;
-	SDL_Rect cloudPosition;
+	clouds = (cloud*) calloc(NB_CLOUDS, sizeof(cloud));
 
-	nbClouds = 10;
-	cloud clouds[nbClouds];
-
-	for (c = 0; c < nbClouds; c++) {
+	for (c = 0; c < NB_CLOUDS; c++) {
 		clouds[c] = createCloud();
-		SDL_BlitSurface(clouds[c].surface, NULL, screen, &clouds[c].position);
 	}
 
-	SDL_Flip(screen);
+	return clouds;
 }
 
 cloud createCloud()
