@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	SDL_Surface *screen;
+	SDL_Surface* screen;
 	int c;
 	w_element ground;
 	w_weighted_element player;
