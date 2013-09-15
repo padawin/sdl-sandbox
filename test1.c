@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include <SDL/SDL.h>
 
 typedef struct {
@@ -16,7 +17,9 @@ typedef struct {
 typedef struct {
 	w_element element;
 	float weight;
-	float speed;
+	float x_speed;
+	float y_speed;
+	bool moving;
 } w_weighted_element;
 
 
@@ -28,6 +31,19 @@ typedef struct {
 #define GRAVITY 1
 #define DRAG 0.98
 #define BOUNCE .09
+#define MOVE_LEFT -1
+#define MOVE_RIGHT 1
+#define MOVE_STOP 0
+
+#define max(a, b) \
+	({ __typeof__ (a) _a = (a); \
+	   __typeof__ (b) _b = (b); \
+	 _a > _b ? _a : _b; })
+
+#define min(a, b) \
+	({ __typeof__ (a) _a = (a); \
+	   __typeof__ (b) _b = (b); \
+	 _a > _b ? _b : _a; })
 
 void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player);
 SDL_Surface* create_window(char* title);
@@ -37,6 +53,7 @@ w_element create_cloud();
 w_weighted_element create_player();
 void handle_player_gravity(w_weighted_element* player, w_element* ground);
 unsigned int get_random_int(unsigned int min, unsigned int max);
+void move_player(w_weighted_element* player, int direction);
 
 int main(int argc, char *argv[])
 {
@@ -102,11 +119,18 @@ w_weighted_element create_player()
 	player.element.x = WINDOW_WIDTH / 2;
 	player.element.y = WINDOW_HEIGHT / 2;
 	player.weight = .05;
-	player.speed = SPEED;
+	player.y_speed = SPEED;
 
 	// Free the image surface
 	SDL_FreeSurface(image);
 	return player;
+}
+
+void move_player(w_weighted_element* player, int direction)
+{
+	if (direction == MOVE_LEFT || direction == MOVE_RIGHT || direction == MOVE_STOP) {
+		(*player).x_speed = SPEED * direction;
+	}
 }
 
 w_element create_ground()
@@ -145,6 +169,8 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 		}
 
 		handle_player_gravity(&player, &ground);
+		player.element.x += player.x_speed;
+		player.element.x = max(0, min((int) player.element.x, WINDOW_WIDTH - player.element.width));
 
 		position.x = player.element.x;
 		position.y = player.element.y;
@@ -152,23 +178,48 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 
 		SDL_Flip(screen);
 
-		SDL_PollEvent(&event);
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				quit = 1;
+		SDL_EnableKeyRepeat(0, 0);
+		//Get the next event from the stack
+		while(SDL_PollEvent(&event)) {
+			//What kind of event has occurred?
+			switch (event.type) {
+				case SDL_QUIT:
+					quit = 1;
+					break;
+				case SDL_KEYDOWN:
+				case SDL_KEYUP:
+					// if a key is released, stop the player
+					if (event.type == SDL_KEYUP) {
+						if (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_RIGHT) {
+							move_player(&player, MOVE_STOP);
+						}
+					}
+					// lese make him move
+					else if (event.key.keysym.sym == SDLK_LEFT) {
+						move_player(&player, MOVE_LEFT);
+					}
+					else if (event.key.keysym.sym == SDLK_RIGHT) {
+						move_player(&player, MOVE_RIGHT);
+					}
+					else if (event.key.keysym.sym == SDLK_UP) {
+						player.y_speed = 55;
+					}
+					// In anycase change the player moving state
+					player.moving = !player.moving;
+					break;
+			}
 		}
 	}
 }
 
 void handle_player_gravity(w_weighted_element* player, w_element* ground)
 {
-	(*player).element.y += (*player).speed;
+	(*player).element.y += (*player).y_speed;
 	if ((*player).element.y + (*player).element.height > (*ground).y) {
 		(*player).element.y = (*ground).y - (*player).element.height;
-		(*player).speed = -(*player).speed * BOUNCE;
+		(*player).y_speed = -(*player).y_speed * BOUNCE;
 	}
-	(*player).speed = (*player).speed * DRAG + GRAVITY;
+	(*player).y_speed = (*player).y_speed * DRAG + GRAVITY * (*player).weight;
 }
 
 SDL_Surface* create_window(char* title)
