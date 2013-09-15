@@ -156,6 +156,8 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 		}
 
 		handle_player_gravity(&player, &ground);
+		player.element.x += player.x_speed;
+		player.element.x = max(0, min((int) player.element.x, WINDOW_WIDTH - player.element.width));
 
 		position.x = player.element.x;
 		position.y = player.element.y;
