@@ -16,7 +16,8 @@ typedef struct {
 typedef struct {
 	w_element element;
 	float weight;
-	float speed;
+	float x_speed;
+	float y_speed;
 } w_weighted_element;
 
 
@@ -102,7 +103,7 @@ w_weighted_element create_player()
 	player.element.x = WINDOW_WIDTH / 2;
 	player.element.y = WINDOW_HEIGHT / 2;
 	player.weight = .05;
-	player.speed = SPEED;
+	player.y_speed = SPEED;
 
 	// Free the image surface
 	SDL_FreeSurface(image);
@@ -163,12 +164,12 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 
 void handle_player_gravity(w_weighted_element* player, w_element* ground)
 {
-	(*player).element.y += (*player).speed;
+	(*player).element.y += (*player).y_speed;
 	if ((*player).element.y + (*player).element.height > (*ground).y) {
 		(*player).element.y = (*ground).y - (*player).element.height;
-		(*player).speed = -(*player).speed * BOUNCE;
+		(*player).y_speed = -(*player).y_speed * BOUNCE;
 	}
-	(*player).speed = (*player).speed * DRAG + GRAVITY;
+	(*player).y_speed = (*player).y_speed * DRAG + GRAVITY * (*player).weight;
 }
 
 SDL_Surface* create_window(char* title)
