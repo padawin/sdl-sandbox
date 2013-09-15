@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
 	}
 	free(clouds);
 	SDL_FreeSurface(ground.surface);
+	SDL_FreeSurface(player.element.surface);
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
