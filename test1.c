@@ -29,6 +29,9 @@ typedef struct {
 #define GRAVITY 1
 #define DRAG 0.98
 #define BOUNCE .09
+#define MOVE_LEFT -1
+#define MOVE_RIGHT 1
+#define MOVE_STOP 0
 
 #define max(a, b) \
 	({ __typeof__ (a) _a = (a); \
@@ -48,6 +51,7 @@ w_element create_cloud();
 w_weighted_element create_player();
 void handle_player_gravity(w_weighted_element* player, w_element* ground);
 unsigned int get_random_int(unsigned int min, unsigned int max);
+void move_player(w_weighted_element* player, int direction);
 
 int main(int argc, char *argv[])
 {
@@ -118,6 +122,13 @@ w_weighted_element create_player()
 	// Free the image surface
 	SDL_FreeSurface(image);
 	return player;
+}
+
+void move_player(w_weighted_element* player, int direction)
+{
+	if (direction == MOVE_LEFT || direction == MOVE_RIGHT || direction == MOVE_STOP) {
+		(*player).x_speed = SPEED * direction;
+	}
 }
 
 w_element create_ground()
