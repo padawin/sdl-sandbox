@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdbool.h>
 #include <SDL/SDL.h>
 
 typedef struct {
@@ -18,6 +19,7 @@ typedef struct {
 	float weight;
 	float x_speed;
 	float y_speed;
+	bool moving;
 } w_weighted_element;
 
 
