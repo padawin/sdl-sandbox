@@ -27,7 +27,7 @@ typedef struct {
 #define NB_CLOUDS 10
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
-#define SPEED 2
+#define SPEED 1
 #define GRAVITY 1
 #define DRAG 0.98
 #define BOUNCE .09
@@ -158,7 +158,7 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 		SDL_BlitSurface(ground.surface, NULL, screen, &position);
 
 		for (c = 0; c < NB_CLOUDS; c++) {
-			clouds[c].x += WIND_SPEED * 5 / clouds[c].z;
+			clouds[c].x += WIND_SPEED * 10 / clouds[c].z;
 			if (clouds[c].x > WINDOW_WIDTH) {
 				clouds[c].x = 0 - clouds[c].width;
 			}
