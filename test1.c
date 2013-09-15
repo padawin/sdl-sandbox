@@ -27,7 +27,7 @@ typedef struct {
 #define SPEED 2
 #define GRAVITY 1
 #define DRAG 0.98
-#define BOUNCE .9
+#define BOUNCE .09
 
 void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_element player);
 SDL_Surface* create_window(char* title);
@@ -101,7 +101,7 @@ w_weighted_element create_player()
 	// Set some player's informations
 	player.element.x = WINDOW_WIDTH / 2;
 	player.element.y = WINDOW_HEIGHT / 2;
-	player.weight = 1;
+	player.weight = .05;
 	player.speed = SPEED;
 
 	// Free the image surface
