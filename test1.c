@@ -178,11 +178,36 @@ void loop(SDL_Surface* screen, w_element ground, w_element* clouds, w_weighted_e
 
 		SDL_Flip(screen);
 
-		SDL_PollEvent(&event);
-		switch(event.type)
-		{
-			case SDL_QUIT:
-				quit = 1;
+		SDL_EnableKeyRepeat(0, 0);
+		//Get the next event from the stack
+		while(SDL_PollEvent(&event)) {
+			//What kind of event has occurred?
+			switch (event.type) {
+				case SDL_QUIT:
+					quit = 1;
+					break;
+				case SDL_KEYDOWN:
+				case SDL_KEYUP:
+					// if a key is released, stop the player
+					if (event.type == SDL_KEYUP) {
+						if (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_RIGHT) {
+							move_player(&player, MOVE_STOP);
+						}
+					}
+					// lese make him move
+					else if (event.key.keysym.sym == SDLK_LEFT) {
+						move_player(&player, MOVE_LEFT);
+					}
+					else if (event.key.keysym.sym == SDLK_RIGHT) {
+						move_player(&player, MOVE_RIGHT);
+					}
+					else if (event.key.keysym.sym == SDLK_UP) {
+						player.y_speed = 55;
+					}
+					// In anycase change the player moving state
+					player.moving = !player.moving;
+					break;
+			}
 		}
 	}
 }
